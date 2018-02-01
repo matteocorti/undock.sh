@@ -20,7 +20,7 @@ if tmutil status | grep -q 'Running\ \=\ 1' ; then
     tmutil stopbackup
 
     while tmutil status | grep -q 'Running\ \=\ 1' ; do
-	printf '\twaiting Time Machine to stop ...\n'
+	printf '  waiting Time Machine to stop ...\n'
 	sleep 2
     done
 
@@ -34,4 +34,13 @@ fi
 # Eject disks
 
 echo 'Ejecting disks'
+
+osascript -e 'tell application "System Events"' -e 'set diskNames to the name of every disk whose ejectable is true' -e 'copy result to stdout' -e 'end tell' |
+    grep '[[:alpha:]]' |
+    sed 's/,\ /,/' |
+    tr ',' '\n' |
+    sort |
+    uniq |
+    sed 's/^/\ \ /'
+
 osascript -e 'tell application "Finder" to eject (every disk whose ejectable is true)'
