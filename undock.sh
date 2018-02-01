@@ -35,7 +35,7 @@ fi
 
 echo 'Ejecting disks'
 
-osascript -e 'tell application "System Events"' -e 'set diskNames to the name of every disk whose ejectable is true' -e 'copy result to stdout' -e 'end tell' |
+osascript -e 'tell application "Finder"' -e 'set diskNames to the name of every disk whose ejectable is true' -e 'copy result to stdout' -e 'end tell' |
     grep '[[:alpha:]]' |
     sed 's/,\ /,/' |
     tr ',' '\n' |
