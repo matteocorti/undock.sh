@@ -35,12 +35,4 @@ fi
 
 echo 'Ejecting disks'
 
-osascript -e 'tell application "Finder"' -e 'set diskNames to the name of every disk whose ejectable is true' -e 'copy result to stdout' -e 'end tell' |
-    grep '[[:alpha:]]' |
-    sed 's/,\ /,/' |
-    tr ',' '\n' |
-    sort |
-    uniq |
-    sed 's/^/\ \ /'
-
 osascript -e 'tell application "Finder" to eject (every disk whose ejectable is true)'
