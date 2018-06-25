@@ -20,8 +20,16 @@ if tmutil status | grep -q 'Running\ \=\ 1' ; then
     tmutil stopbackup
 
     while tmutil status | grep -q 'Running\ \=\ 1' ; do
+	
 	printf '  waiting Time Machine to stop ...\n'
 	sleep 2
+
+	# sometimes the 'stopbackup' command has to be repeated
+	
+	if tmutil status | grep -q 'Running\ \=\ 1' ; then
+	    tmutil stopbackup
+	fi
+	
     done
 
 else
