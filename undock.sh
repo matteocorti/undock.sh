@@ -39,6 +39,12 @@ else
 fi
 
 ##############################################################################
+# Quit VM Ware Fusion
+
+echo 'Quitting VMware Fusion'
+osascript -e 'quit app "VMware Fusion"'
+
+##############################################################################
 # Eject disks
 
 echo 'Ejecting disks'
