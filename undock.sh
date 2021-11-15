@@ -45,6 +45,12 @@ echo 'Quitting VMware Fusion'
 osascript -e 'quit app "VMware Fusion"'
 
 ##############################################################################
+# Quit Parallels
+
+echo 'Quitting Parallels'
+osascript -e 'quit app "Parallels Desktop"'
+
+##############################################################################
 # Eject disks
 
 echo 'Ejecting disks'
