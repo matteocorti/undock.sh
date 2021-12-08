@@ -7,7 +7,7 @@
 # Copyright (c) 2018-2021 Matteo Corti <matteo@corti.li>
 #
 # This module is free software; you can redistribute it and/or modify it
-# under the terms of the Apache Licese v2
+# under the terms of the Apache License v2
 # See the LICENSE file for details.
 #
 
