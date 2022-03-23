@@ -1,6 +1,6 @@
 
- (c) Matteo Corti, 2018-2021
+ (c) Matteo Corti, 2018-2022
 
 # undock.sh
 
-Undocks a Mac by stopping time Machine, VMware Fusion, Parallels end ejecting all ejectable disks
+Undocks a Mac by stopping time Machine and ejecting all ejectable disks
