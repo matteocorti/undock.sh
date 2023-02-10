@@ -39,6 +39,17 @@ else
 fi
 
 ##############################################################################
+# Stop Parallels
+
+# heck if Paralles is running a VM from an external disk
+if ps auxw | grep [P]arallels | grep -q [V]olumes ; then
+
+    echo "Stopping Parallels"
+    osascript -e 'quit app "Parallels Desktop"'
+fi
+
+
+##############################################################################
 # Eject disks
 
 echo 'Ejecting disks'
