@@ -42,12 +42,16 @@ fi
 # Stop Parallels
 
 # heck if Paralles is running a VM from an external disk
-if ps auxw | grep [P]arallels | grep -q [V]olumes ; then
+if pgrep -afl '[P]arallels' | grep -q '[V]olumes'; then
 
     echo "Stopping Parallels"
     osascript -e 'quit app "Parallels Desktop"'
-fi
 
+else
+
+    echo 'No Parallels VMs running from an external disk'
+
+fi
 
 ##############################################################################
 # Eject disks
