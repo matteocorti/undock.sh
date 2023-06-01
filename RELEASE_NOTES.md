@@ -1,1 +1,1 @@
-First packaged version
+Corrected the licensing information
