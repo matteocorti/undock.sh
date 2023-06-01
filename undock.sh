@@ -4,12 +4,15 @@
 #
 # Undocks a Mac
 #
-# Copyright (c) 2018-2022 Matteo Corti <matteo@corti.li>
+# Copyright (c) 2018-2023 Matteo Corti <matteo@corti.li>
 #
 # This module is free software; you can redistribute it and/or modify it
 # under the terms of the Apache License v2
 # See the LICENSE file for details.
 #
+
+# shellcheck disable=SC2034
+VERSION=1.0.1
 
 ##############################################################################
 # Stop time machine
