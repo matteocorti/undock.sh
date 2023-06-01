@@ -42,7 +42,7 @@ printf "\rTime Machine is not running       \n"
 ##############################################################################
 # Stop Parallels
 
-# heck if Paralles is running a VM from an external disk
+# heck if Parallels is running a VM from an external disk
 if pgrep -afl '[P]arallels' | grep -q '[V]olumes'; then
 
     printf "Stopping Parallels"

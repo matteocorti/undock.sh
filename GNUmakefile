@@ -49,14 +49,8 @@ SHELLCHECK := $(shell command -v shellcheck 2> /dev/null)
 distcheck: disttest
 disttest: dist formatting_check copyright_check shellcheck
 
-COMPLETIONS_DIR := $(shell pkg-config --variable=completionsdir bash-completion)
-install_bash_completion:
-ifdef COMPLETIONS_DIR
-	cp tmstatus.sh.completion $(COMPLETIONS_DIR)/tmstatus.sh
-endif
-
 install:
-	cp tmstatus.sh /usr/local/bin
+	cp $(SCRIPT) /usr/local/bin
 
 shellcheck:
 ifndef SHELLCHECK
