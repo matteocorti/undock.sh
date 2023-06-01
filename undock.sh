@@ -21,7 +21,7 @@ if tmutil status | grep -q 'Running\ \=\ 1'; then
 
     while tmutil status | grep -q 'Running\ \=\ 1'; do
 
-        printf '  waiting Time Machine to stop ...\n'
+        printf '\rWaiting Time Machine to stop ...'
         sleep 2
 
         # sometimes the 'stopbackup' command has to be repeated
@@ -32,11 +32,9 @@ if tmutil status | grep -q 'Running\ \=\ 1'; then
 
     done
 
-else
-
-    echo 'Time Machine is not running'
-
 fi
+
+printf "\rTime Machine is not running       \n"
 
 ##############################################################################
 # Stop Parallels
@@ -44,18 +42,17 @@ fi
 # heck if Paralles is running a VM from an external disk
 if pgrep -afl '[P]arallels' | grep -q '[V]olumes'; then
 
-    echo "Stopping Parallels"
+    printf "Stopping Parallels"
     osascript -e 'quit app "Parallels Desktop"'
 
-else
-
-    echo 'No Parallels VMs running from an external disk'
-
 fi
+printf "\rNo Parallels VMs running from an external disk\n"
+
 
 ##############################################################################
 # Eject disks
 
-echo 'Ejecting disks'
+printf 'Ejecting disks'
 
 osascript -e 'tell application "Finder" to eject (every disk whose ejectable is true)'
+printf "\rDisks ejected    \n"
