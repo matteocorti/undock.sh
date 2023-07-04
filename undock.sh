@@ -39,45 +39,45 @@ fi
 
 printf "\rTime Machine is not running       \n"
 
-disks=$( diskutil list external | grep '^/dev' | sed 's/ .*//' )
+disks=$(diskutil list external | grep '^/dev' | sed 's/ .*//')
 
-if [ -n "${disks}" ] ; then
+if [ -n "${disks}" ]; then
 
     # listing applications to be closed
     for disk in ${disks}; do
 
-        volume=$( mount | grep "^${disk}" | sed -e 's/.* on //' -e 's/ (.*//' )
-    
-        if [ -n "${volume}" ] ; then
+        volume=$(mount | grep "^${disk}" | sed -e 's/.* on //' -e 's/ (.*//')
+
+        if [ -n "${volume}" ]; then
             printf "Killing processes accessing >>>%s<<<\n" "${volume}"
 
-            for proc in $( sudo lsof | grep "${volume}" | sed -e 's/^[^ ]* *//' -e 's/ .*//' | sort -u ) ; do
+            for proc in $(sudo lsof | grep "${volume}" | sed -e 's/^[^ ]* *//' -e 's/ .*//' | sort -u); do
 
-                procname=$( ps -o comm "${proc}" | tail -n 1 )
+                procname=$(ps -o comm "${proc}" | tail -n 1)
 
                 printf "  Trying to kill %s\n" "${procname}"
 
-                kill "${proc}" > /dev/null 2>&1
-            
+                kill "${proc}" >/dev/null 2>&1
+
             done
-        
+
         fi
-        
+
     done
-    
+
     ##############################################################################
     # Eject disks
 
     printf 'Ejecting external disks:\n'
 
-    for disk in ${disks} ; do
-        diskname=$( diskutil info "${disk}" | grep 'Media Name' | sed 's/.*Media Name: *//' )
+    for disk in ${disks}; do
+        diskname=$(diskutil info "${disk}" | grep 'Media Name' | sed 's/.*Media Name: *//')
         printf '  Ejecting %s\n' "${diskname}"
-        diskutil eject "${disk}" > /dev/null 2>&1
+        diskutil eject "${disk}" >/dev/null 2>&1
     done
 
     printf "External disks ejected\n"
-    
+
 else
 
     printf "No external disks to eject\n"
