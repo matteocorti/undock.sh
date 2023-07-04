@@ -39,23 +39,47 @@ fi
 
 printf "\rTime Machine is not running       \n"
 
-##############################################################################
-# Stop Parallels
+disks=$( diskutil list external | grep '^/dev' | sed 's/ .*//' )
 
-# heck if Parallels is running a VM from an external disk
-if pgrep -afl '[P]arallels' | grep -q '[V]olumes'; then
+if [ -n "${disks}" ] ; then
 
-    printf "Stopping Parallels"
-    osascript -e 'quit app "Parallels Desktop"'
+    # listing applications to be closed
+    for disk in ${disks}; do
+
+        volume=$( mount | grep "^${disk}" | sed -e 's/.* on //' -e 's/ (.*//' )
+    
+        if [ -n "${volume}" ] ; then
+            printf "Killing processes accessing >>>%s<<<\n" "${volume}"
+
+            for proc in $( sudo lsof | grep "${volume}" | sed -e 's/^[^ ]* *//' -e 's/ .*//' | sort -u ) ; do
+
+                procname=$( ps -o comm "${proc}" | tail -n 1 )
+
+                printf "  Trying to kill %s\n" "${procname}"
+
+                kill "${proc}" > /dev/null 2>&1
+            
+            done
+        
+        fi
+        
+    done
+    
+    ##############################################################################
+    # Eject disks
+
+    printf 'Ejecting external disks:\n'
+
+    for disk in ${disks} ; do
+        diskname=$( diskutil info "${disk}" | grep 'Media Name' | sed 's/.*Media Name: *//' )
+        printf '  Ejecting %s\n' "${diskname}"
+        diskutil eject "${disk}" > /dev/null 2>&1
+    done
+
+    printf "External disks ejected\n"
+    
+else
+
+    printf "No external disks to eject\n"
 
 fi
-printf "\rNo Parallels VMs running from an external disk\n"
-
-
-##############################################################################
-# Eject disks
-
-printf 'Ejecting disks'
-
-osascript -e 'tell application "Finder" to eject (every disk whose ejectable is true)'
-printf "\rDisks ejected    \n"
