@@ -108,8 +108,8 @@ if [ -n "${disks}" ]; then
 
         if [ -n "${volume}" ]; then
             printf "Killing processes accessing %s\n" "${volume}"
-
-            for proc in $(sudo lsof | grep "${volume}" | sed -e 's/^[^ ]* *//' -e 's/ .*//' | sort -u); do
+            
+            for proc in $(sudo lsof | grep "${volume}" | sed -e 's/^[^ ]* *//' -e 's/ .*//' | grep -v mds | sort -u); do
 
                 procname=$(ps -o comm "${proc}" | tail -n 1)
 
