@@ -34,9 +34,9 @@ usage() {
 
 command() {
     if [ -n "${DRY_RUN}" ]; then
-        echo "$ $1"
+        echo "$ $*"
     else
-        $1
+        "$@"
     fi
 }
 
@@ -60,7 +60,6 @@ while true; do
         if [ -n "$1" ]; then
             echo "Error: unknown option: ${1}" 1>&2
             usage
-            exit 1
         fi
         break
         ;;
@@ -84,7 +83,7 @@ if tmutil status | grep -q 'Running\ \=\ 1'; then
         # sometimes the 'stopbackup' command has to be repeated
 
         if tmutil status | grep -q 'Running\ \=\ 1'; then
-            command "tmutil stopbackup"
+            command tmutil stopbackup
         fi
 
     done
@@ -114,9 +113,9 @@ if [ -n "${disks}" ]; then
 
                 procname=$(ps -o comm "${proc}" | tail -n 1)
 
-                printf "  Trying to kill %s\n" "${procname}"
+                printf "  Trying to kill '%s' (%s)\n" "${procname}" "${proc}"
 
-                command "kill ${proc} >/dev/null 2>&1"
+                command sudo kill "${proc}"
 
             done
 
