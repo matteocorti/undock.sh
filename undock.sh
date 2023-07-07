@@ -131,7 +131,7 @@ if [ -n "${disks}" ]; then
     for disk in ${disks}; do
         diskname=$(diskutil info "${disk}" | grep 'Media Name' | sed 's/.*Media Name: *//')
         printf '  Ejecting %s\n' "${diskname}"
-        command "diskutil eject ${disk} >/dev/null 2>&1"
+        command diskutil eject "${disk}"
     done
 
     printf "External disks ejected\n"
