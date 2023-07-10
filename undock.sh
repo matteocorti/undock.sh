@@ -76,7 +76,7 @@ while true; do
         shift
         ;;
     -V | --version)
-        echo ".sh version ${VERSION}"
+        echo "undock.sh version ${VERSION}"
         exit
         ;;
     *)
