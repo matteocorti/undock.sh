@@ -10,5 +10,5 @@ Undocks a Mac by stopping time Machine and ejecting all ejectable disks
 The script:
 
  * Stops Time Machine
- * Quits Parallels if running a VM from an external disk
- * Ejects externa disks
+ * Quits processes accessing external and network drives
+ * Ejects external and network drives
