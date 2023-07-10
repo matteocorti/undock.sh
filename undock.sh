@@ -12,7 +12,7 @@
 #
 
 # shellcheck disable=SC2034
-VERSION=1.0.2
+VERSION=1.1.0
 
 usage() {
 
@@ -38,6 +38,29 @@ command() {
     else
         "$@"
     fi
+}
+
+kill_processes() {
+
+    volume=$1
+            
+    for proc in $(
+                     sudo lsof |
+                         grep "${volume}" |
+                         grep -v mds |
+                         grep -v Finder |
+                         sed -e 's/^[^ ]* *//' -e 's/ .*//' |
+                         sort -u
+                 ); do
+
+        procname=$(ps -o comm "${proc}" | tail -n 1)
+
+        printf "    Trying to kill '%s' (%s)\n" "${procname}" "${proc}"
+
+        command sudo kill "${proc}"
+
+    done
+    
 }
 
 COMMAND_LINE_ARGUMENTS=$*
@@ -70,9 +93,10 @@ done
 ##############################################################################
 # Stop time machine
 
+printf 'Time machine\n'
 if tmutil status | grep -q 'Running\ \=\ 1'; then
 
-    echo 'Stopping Time Machine'
+    echo '  Stopping Time Machine'
     command "tmutil stopbackup"
 
     while tmutil status | grep -q 'Running\ \=\ 1'; do
@@ -88,56 +112,85 @@ if tmutil status | grep -q 'Running\ \=\ 1'; then
 
     done
 
+else
+
+    printf "  Time Machine is not running\n"
+
 fi
 
-printf "Time Machine is not running\n"
+printf '\nExternal disks\n'
 
-##############################################################################
-# Try to kill processes accessing external disks
+# External disks
 
-# list external disks
 disks=$(diskutil list external | grep '^/dev' | sed 's/ .*//')
-
 if [ -n "${disks}" ]; then
 
-    # listing applications to be closed
+    if mount | grep -q "${disk}" ; then
+    
+        # listing applications to be closed
+        for disk in ${disks}; do
+
+            
+            # get the volume for the disk
+            volume=$(mount | grep "^${disk}" | sed -e 's/.* on //' -e 's/ (.*//')
+            
+            if [ -n "${volume}" ]; then
+                printf '  Killing processes accessing %s\n' "${volume}"
+                kill_processes "${volume}"
+            fi
+
+        done
+
+    fi
+        
+    ##############################################################################
+    # Eject disks
+
     for disk in ${disks}; do
 
-        # get the volume for the disk
-        volume=$(mount | grep "^${disk}" | sed -e 's/.* on //' -e 's/ (.*//')
-
-        if [ -n "${volume}" ]; then
-            printf "Killing processes accessing %s\n" "${volume}"
-            
-            for proc in $(sudo lsof | grep "${volume}" | sed -e 's/^[^ ]* *//' -e 's/ .*//' | grep -v mds | sort -u); do
-
-                procname=$(ps -o comm "${proc}" | tail -n 1)
-
-                printf "  Trying to kill '%s' (%s)\n" "${procname}" "${proc}"
-
-                command sudo kill "${proc}"
-
-            done
-
+        if mount | grep -q "${disk}" ; then
+        
+            diskname=$(diskutil info "${disk}" | grep 'Media Name' | sed 's/.*Media Name: *//')
+            printf '  Ejecting %s\n' "${diskname}"
+            command diskutil eject "${disk}"
         fi
+        
+    done
 
+    printf "  External disks ejected\n"
+
+else
+
+    printf "  No external disks to eject\n"
+
+fi
+
+
+printf '\nNetwork volumes\n'
+
+# Network volumes
+
+net_volumes=$(  mount | grep smbfs | sed -e 's/.*\ on\ //' -e 's/\ (.*//' )
+if [ -n "${net_volumes}" ]; then
+
+    # listing applications to be closed
+    for net_volume in ${net_volumes}; do
+        printf '  Killing processes accessing %s\n' "${net_volume}"
+        kill_processes "${net_volume}"
     done
 
     ##############################################################################
     # Eject disks
 
-    printf 'Ejecting external disks:\n'
-
-    for disk in ${disks}; do
-        diskname=$(diskutil info "${disk}" | grep 'Media Name' | sed 's/.*Media Name: *//')
-        printf '  Ejecting %s\n' "${diskname}"
-        command diskutil eject "${disk}"
+    for net_volume in ${net_volumes}; do
+        printf '  Ejecting %s\n' "${net_volume}"
+        command umount "${net_volume}"
     done
 
-    printf "External disks ejected\n"
+    printf "  Network volumes ejected\n"
 
 else
 
-    printf "No external disks to eject\n"
+    printf "  No network volumes to eject\n"
 
 fi
