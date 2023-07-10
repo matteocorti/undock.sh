@@ -1,1 +1,1 @@
-Corrected the licensing information
+Support for network volumes
