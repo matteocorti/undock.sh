@@ -97,7 +97,7 @@ printf 'Time machine\n'
 if tmutil status | grep -q 'Running\ \=\ 1'; then
 
     echo '  Stopping Time Machine'
-    command "tmutil stopbackup"
+    command tmutil stopbackup
 
     while tmutil status | grep -q 'Running\ \=\ 1'; do
 
