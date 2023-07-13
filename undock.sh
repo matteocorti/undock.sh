@@ -12,7 +12,9 @@
 #
 
 # shellcheck disable=SC2034
-VERSION=1.1.0
+VERSION=1.2.0
+
+PREFIX='    '
 
 usage() {
 
@@ -36,7 +38,7 @@ command() {
     if [ -n "${DRY_RUN}" ]; then
         echo "$ $*"
     else
-        "$@"
+        "$@" 2>&1 | sed "s/^/${PREFIX}/"
     fi
 }
 
@@ -194,3 +196,8 @@ else
     printf "  No network volumes to eject\n"
 
 fi
+
+# Music
+
+printf '\nStopping the music\n'
+osascript -e 'tell application "Music" to pause'
